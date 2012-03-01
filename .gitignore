@@ -1,0 +1,11 @@
+[Bb]in
+[Oo]bj
+*.suo
+*.user
+
+packages/**/*
+!packages/repositories.config
+
+Thumbs.db
+Desktop.ini
+*.zip
