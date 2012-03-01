@@ -1,8 +1,10 @@
-﻿namespace Mueller.EveLib
+﻿namespace EveLib
 
 open System
+open System.Xml.Linq
+open EveLib.FSharp
 
-type ApiKey = {
+type ApiKey = { 
     Id : int
     VCode : string
     AccessMask : int

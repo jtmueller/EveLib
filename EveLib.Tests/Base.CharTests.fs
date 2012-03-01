@@ -1,0 +1,2 @@
+﻿module EveLib.Tests.BaseCharTests
+

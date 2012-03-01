@@ -1,5 +1,5 @@
 ﻿#nowarn "77"
-namespace Mueller.EveLib.FSharp
+namespace EveLib.FSharp
 
 open System
 open System.Collections.Generic

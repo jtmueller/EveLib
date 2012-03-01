@@ -9,8 +9,8 @@
 #load "Models.fs"
 #load "Interfaces.fs"
 #load "EveClient.fs"
-open Mueller.EveLib
-open Mueller.EveLib.FSharp
+open EveLib
+open EveLib.FSharp
 
 let key = { Id = 0; VCode = ""; AccessMask = 0 }
 let client = EveClient.CreateSync key

@@ -1,10 +1,10 @@
-﻿namespace Mueller.EveLib
+﻿namespace EveLib
 
 open System
 open System.Xml
 open System.Xml.Linq
-open Mueller.EveLib
-open Mueller.EveLib.FSharp
+open EveLib
+open EveLib.FSharp
 open ClientUtils
 
 type private CharacterQueries(apiValues: (string * string) list) =
@@ -22,11 +22,11 @@ type private CharacterQueries(apiValues: (string * string) list) =
             |> Seq.cache
     }
 
-    interface Mueller.EveLib.FSharp.ICharQueries with
+    interface EveLib.FSharp.ICharQueries with
         member x.GetAccountBalance(charId) = getAccountBalance charId
-    interface Mueller.EveLib.Async.ICharQueries with
+    interface EveLib.Async.ICharQueries with
         member x.GetAccountBalance(charId) = getAccountBalance charId |> Async.StartAsTask
-    interface Mueller.EveLib.Sync.ICharQueries with
+    interface EveLib.Sync.ICharQueries with
         member x.GetAccountBalance(charId) = getAccountBalance charId |> Async.RunSynchronously
 
 type private CorporationQueries(apiValues: (string * string) list) =
@@ -44,11 +44,11 @@ type private CorporationQueries(apiValues: (string * string) list) =
             |> Seq.cache
     }
 
-    interface Mueller.EveLib.FSharp.ICorpQueries with
+    interface EveLib.FSharp.ICorpQueries with
         member x.GetAccountBalance(charId) = getAccountBalance charId
-    interface Mueller.EveLib.Async.ICorpQueries with
+    interface EveLib.Async.ICorpQueries with
         member x.GetAccountBalance(charId) = getAccountBalance charId |> Async.StartAsTask
-    interface Mueller.EveLib.Sync.ICorpQueries with
+    interface EveLib.Sync.ICorpQueries with
         member x.GetAccountBalance(charId) = getAccountBalance charId |> Async.RunSynchronously
 
 type private EveQueries(apiValues: (string * string) list) =
@@ -69,13 +69,13 @@ type private EveQueries(apiValues: (string * string) list) =
                |> Seq.map (fun r -> { Name = xval r?name; ItemId = xval r?characterID; CachedUntil = response.CachedUntil })
                |> Seq.cache
     }
-    interface Mueller.EveLib.FSharp.IEveQueries with
+    interface EveLib.FSharp.IEveQueries with
         member x.GetItemIds([<ParamArray>] names : string[]) = getItemIds names
         member x.GetItemNames([<ParamArray>] ids : int[]) = getItemNames ids
-    interface Mueller.EveLib.Async.IEveQueries with
+    interface EveLib.Async.IEveQueries with
         member x.GetItemIds([<ParamArray>] names : string[]) = getItemIds names |> Async.StartAsTask
         member x.GetItemNames([<ParamArray>] ids : int[]) = getItemNames ids |> Async.StartAsTask
-    interface Mueller.EveLib.Sync.IEveQueries with
+    interface EveLib.Sync.IEveQueries with
         member x.GetItemIds([<ParamArray>] names : string[]) = getItemIds names |> Async.RunSynchronously
         member x.GetItemNames([<ParamArray>] ids : int[]) = getItemNames ids |> Async.RunSynchronously
 
@@ -97,11 +97,11 @@ type private MapQueries(apiValues: (string * string) list) =
         }
     }
 
-    interface Mueller.EveLib.FSharp.IMapQueries with
+    interface EveLib.FSharp.IMapQueries with
         member x.GetRecentKills() = getRecentKills()
-    interface Mueller.EveLib.Async.IMapQueries with
+    interface EveLib.Async.IMapQueries with
         member x.GetRecentKills() = getRecentKills() |> Async.StartAsTask
-    interface Mueller.EveLib.Sync.IMapQueries with
+    interface EveLib.Sync.IMapQueries with
         member x.GetRecentKills() = getRecentKills() |> Async.RunSynchronously
 
 type EveClient (apiKey:ApiKey) =
@@ -137,7 +137,7 @@ type EveClient (apiKey:ApiKey) =
                  CachedUntil = response.CachedUntil }
     }
 
-    interface Mueller.EveLib.FSharp.IEveClient with
+    interface EveLib.FSharp.IEveClient with
         member x.GetCharacters() = getCharacters()
         member x.GetServerStatus() = getServerStatus()
         member x.Character = upcast character.Value
@@ -145,7 +145,7 @@ type EveClient (apiKey:ApiKey) =
         member x.Eve = upcast eve.Value
         member x.Map = upcast map.Value
 
-    interface Mueller.EveLib.Async.IEveClient with
+    interface EveLib.Async.IEveClient with
         member x.GetCharacters() = getCharacters() |> Async.StartAsTask
         member x.GetServerStatus() = getServerStatus() |> Async.StartAsTask
         member x.Character = upcast character.Value
@@ -153,7 +153,7 @@ type EveClient (apiKey:ApiKey) =
         member x.Eve = upcast eve.Value
         member x.Map = upcast map.Value
 
-    interface Mueller.EveLib.Sync.IEveClient with
+    interface EveLib.Sync.IEveClient with
         member x.GetCharacters() = getCharacters() |> Async.RunSynchronously
         member x.GetServerStatus() = getServerStatus() |> Async.RunSynchronously
         member x.Character = upcast character.Value
@@ -161,7 +161,7 @@ type EveClient (apiKey:ApiKey) =
         member x.Eve = upcast eve.Value
         member x.Map = upcast map.Value
 
-    static member CreateFSharp apiKey = EveClient(apiKey) :> Mueller.EveLib.FSharp.IEveClient
-    static member CreateAsync apiKey = EveClient(apiKey) :> Mueller.EveLib.Async.IEveClient
-    static member CreateSync apiKey = EveClient(apiKey) :> Mueller.EveLib.Sync.IEveClient
+    static member CreateFSharp apiKey = EveClient(apiKey) :> EveLib.FSharp.IEveClient
+    static member CreateAsync apiKey = EveClient(apiKey) :> EveLib.Async.IEveClient
+    static member CreateSync apiKey = EveClient(apiKey) :> EveLib.Sync.IEveClient
 

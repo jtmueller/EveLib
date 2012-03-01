@@ -1,11 +1,11 @@
-﻿namespace Mueller.EveLib
+﻿namespace EveLib
 
 open System
 open System.Net
 open System.Text
 open System.Xml
 open System.Xml.Linq
-open Mueller.EveLib.FSharp
+open EveLib.FSharp
 
 type Row(el:XElement) =
     member x.Element = el

@@ -13,12 +13,18 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "EveLib.RavenCache", "EveLib
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "EveLib", "EveLib\EveLib.fsproj", "{303F3D80-9FFC-4AFE-BDE0-3431AAC6CDE3}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "EveLib.Tests", "EveLib.Tests\EveLib.Tests.fsproj", "{0CFF4110-6D60-4E5C-9936-B56A517E4EDD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0CFF4110-6D60-4E5C-9936-B56A517E4EDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CFF4110-6D60-4E5C-9936-B56A517E4EDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CFF4110-6D60-4E5C-9936-B56A517E4EDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CFF4110-6D60-4E5C-9936-B56A517E4EDD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{303F3D80-9FFC-4AFE-BDE0-3431AAC6CDE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{303F3D80-9FFC-4AFE-BDE0-3431AAC6CDE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{303F3D80-9FFC-4AFE-BDE0-3431AAC6CDE3}.Release|Any CPU.ActiveCfg = Release|Any CPU

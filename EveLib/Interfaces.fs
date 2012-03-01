@@ -1,6 +1,6 @@
-﻿namespace Mueller.EveLib.FSharp
+﻿namespace EveLib.FSharp
 open System
-open Mueller.EveLib
+open EveLib
 
 // http://wiki.eve-id.net/APIv2_Page_Index
 // http://community.eveonline.com/community/toolkit.asp
@@ -28,10 +28,10 @@ type IEveClient =
     abstract member Eve : IEveQueries with get
     abstract member Map : IMapQueries with get
 
-namespace Mueller.EveLib.Async
+namespace EveLib.Async
 open System
 open System.Threading.Tasks
-open Mueller.EveLib
+open EveLib
 
 type ICharQueries =
     abstract member GetAccountBalance : int -> Task<seq<WalletAccount>>
@@ -56,9 +56,9 @@ type IEveClient =
     abstract member Eve : IEveQueries with get
     abstract member Map : IMapQueries with get
 
-namespace Mueller.EveLib.Sync
+namespace EveLib.Sync
 open System
-open Mueller.EveLib
+open EveLib
 
 type ICharQueries =
     abstract member GetAccountBalance : int -> seq<WalletAccount>

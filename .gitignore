@@ -6,6 +6,8 @@
 packages/**/*
 !packages/repositories.config
 
+TestResults/*
+
 Thumbs.db
 Desktop.ini
 *.zip
