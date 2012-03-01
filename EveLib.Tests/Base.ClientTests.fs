@@ -10,5 +10,19 @@
         async {
             let client = EveClient.CreateFSharp apiKey
             let! charList = client.GetCharacters()
-            test <@ charList.Characters |> Seq.length <> 0 @>
+            Assert.True(charList.Characters |> Seq.length > 0)
         } |> Async.StartAsTask
+
+    [<Fact>]
+    let ``Sync GetCharacters`` () =
+        let client = EveClient.CreateSync apiKey
+        let charList = client.GetCharacters()
+        test <@ charList.Characters |> Seq.length <> 0 @>
+
+    [<Fact>]
+    let ``No Unquote`` () =
+        Assert.Equal(2 + 2, 4)
+
+    [<Fact>]
+    let ``With Unquote`` () =
+        test <@ 2 + 2 = 4 @>
