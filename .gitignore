@@ -4,6 +4,7 @@
 *.user
 
 packages/**/*
+packages/*
 !packages/repositories.config
 
 TestResults/*
