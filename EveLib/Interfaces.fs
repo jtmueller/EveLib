@@ -6,12 +6,12 @@ open EveLib
 // http://community.eveonline.com/community/toolkit.asp
 
 type ICharQueries =
-    abstract member GetAccountBalance : int -> Async<seq<WalletAccount>>
+    abstract member GetAccountBalance : int -> Async<WalletSet>
     //abstract member GetMailHeaders : int -> Async<MailHeaderList>
     //abstract member GetMailBodies : int -> Async<MailBodyList>
 
 type ICorpQueries =
-    abstract member GetAccountBalance : int -> Async<seq<WalletAccount>>
+    abstract member GetAccountBalance : int -> Async<WalletSet>
 
 type IEveQueries =
     abstract member GetItemIds : [<ParamArray>] names : string[] -> Async<seq<NamedItem>>
@@ -34,12 +34,12 @@ open System.Threading.Tasks
 open EveLib
 
 type ICharQueries =
-    abstract member GetAccountBalance : int -> Task<seq<WalletAccount>>
+    abstract member GetAccountBalance : int -> Task<WalletSet>
     //abstract member GetMailHeaders : int -> Task<MailHeaderList>
     //abstract member GetMailBodies : int -> Task<MailBodyList>
 
 type ICorpQueries =
-    abstract member GetAccountBalance : int -> Task<seq<WalletAccount>>
+    abstract member GetAccountBalance : int -> Task<WalletSet>
 
 type IEveQueries =
     abstract member GetItemIds : [<ParamArray>] names : string[] -> Task<seq<NamedItem>>
@@ -61,12 +61,12 @@ open System
 open EveLib
 
 type ICharQueries =
-    abstract member GetAccountBalance : int -> seq<WalletAccount>
+    abstract member GetAccountBalance : int -> WalletSet
     //abstract member GetMailHeaders : int -> MailHeaderList
     //abstract member GetMailBodies : int -> MailBodyList
 
 type ICorpQueries =
-    abstract member GetAccountBalance : int -> seq<WalletAccount>
+    abstract member GetAccountBalance : int -> WalletSet
 
 type IEveQueries =
     abstract member GetItemIds : [<ParamArray>] names : string[] -> seq<NamedItem>

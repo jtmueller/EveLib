@@ -4,6 +4,7 @@
 
 open System
 open System.Reflection
+open System.Linq
 open Microsoft.FSharp.Reflection
 open Newtonsoft.Json
 open Raven.Client.Document
@@ -106,10 +107,11 @@ module RavenExt =
         member x.AsyncSaveChanges() =
             x.SaveChangesAsync() |> (Async.AwaitIAsyncResult >> Async.Ignore)
 
-    type Raven.Client.Linq.IRavenQueryable<'a> with
+    type System.Linq.IQueryable<'a> with
         member x.AsyncToList() =
             x.ToListAsync() |> Async.AwaitTask
 
+    type Raven.Client.Linq.IRavenQueryable<'a> with
         member x.AsyncSuggest() =
             x.SuggestAsync() |> Async.AwaitTask
 
@@ -121,4 +123,16 @@ module RavenExt =
         
         member x.AsyncToFacets(facetDoc) =
             x.ToFacetsAsync(facetDoc) |> Async.AwaitTask
-        
+       
+module AsyncQuery =
+
+    let asIList<'a> (queryable: IQueryable<'a>) =
+        queryable.AsyncToList()
+
+    let head<'a> (queryable: IQueryable<'a>) = async {
+        let! items = queryable.AsyncToList()
+        return 
+            if items.Count = 0
+                then None
+                else Some(items.[0])
+    }

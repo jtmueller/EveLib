@@ -18,9 +18,21 @@ type BaseClientTests(clientFactory: unit -> FSharp.IEveClient) =
         } |> Async.StartAsTask
 
     [<Fact>]
+    let ``Can get server status`` () =
+        async {
+            let client = clientFactory()
+            let! status = client.GetServerStatus()
+            Assert.True(status.OnlinePlayers > 0)
+        } |> Async.StartAsTask
+
+    [<Fact>]
     let ``Can get recent kills`` () =
         async {
             let client = clientFactory()
             let! kills = client.Map.GetRecentKills()
             Assert.NotEmpty(kills.SolarSystems)
-        }
+        } |> Async.StartAsTask
+
+
+type RavenClientTests() =
+    inherit BaseClientTests(fun () -> upcast EveLib.RavenCache.RavenEveClient(apiKey))

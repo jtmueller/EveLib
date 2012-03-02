@@ -39,16 +39,19 @@ type NamedItem = {
     CachedUntil : DateTimeOffset
 }
 
+type WalletType =
+    | Personal = 0
+    | Corporate = 1
+
 type WalletAccount = {
     AccountId : int
     AccountKey : int
     Balance : decimal
-    QueryTime : DateTimeOffset
-    CachedUntil : DateTimeOffset
 }
 
 type WalletSet = {
     CharacterId : int
+    Type : WalletType
     Accounts : seq<WalletAccount>
     QueryTime : DateTimeOffset
     CachedUntil : DateTimeOffset

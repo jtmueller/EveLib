@@ -39,6 +39,11 @@
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <ItemGroup>
     <Compile Include="RavenExt.fs" />
+    <Compile Include="CharacterQueries.fs" />
+    <Compile Include="CorporationQueries.fs" />
+    <Compile Include="EveQueries.fs" />
+    <Compile Include="MapQueries.fs" />
+    <Compile Include="RavenEveClient.fs" />
     <None Include="Script.fsx" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -88,6 +93,7 @@
     <Reference Include="System.ServiceModel.Activities" />
     <Reference Include="System.ServiceModel.Discovery" />
     <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
     <ProjectReference Include="..\EveLib\EveLib.fsproj">
       <Name>EveLib</Name>

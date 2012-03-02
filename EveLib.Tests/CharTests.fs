@@ -14,6 +14,9 @@ type BaseCharTests(clientFactory: unit -> FSharp.IEveClient) =
             let! charInfo = client.Eve.GetItemIds("Sigur Yassavi")
             let subject = charInfo |> Seq.head
             let! wallets = client.Character.GetAccountBalance(subject.ItemId)
-            let wallet = wallets |> Seq.head
-            Assert.Equal(subject.ItemId, wallet.AccountId)
-        }
+            Assert.Equal(subject.ItemId, wallets.CharacterId)
+            Assert.NotEmpty(wallets.Accounts)
+        } |> Async.StartAsTask
+
+type RavenCharTests() =
+    inherit BaseCharTests(fun () -> upcast EveLib.RavenCache.RavenEveClient(apiKey))

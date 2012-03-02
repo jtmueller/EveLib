@@ -43,6 +43,10 @@
     <Compile Include="ClientUtils.fs" />
     <Compile Include="Models.fs" />
     <Compile Include="Interfaces.fs" />
+    <Compile Include="CharacterQueries.fs" />
+    <Compile Include="CorporationQueries.fs" />
+    <Compile Include="EveQueries.fs" />
+    <Compile Include="MapQueries.fs" />
     <Compile Include="EveClient.fs" />
     <None Include="Script.fsx" />
   </ItemGroup>
