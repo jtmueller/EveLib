@@ -40,9 +40,9 @@
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <ItemGroup>
     <Compile Include="TestUtils.fs" />
-    <Compile Include="Base.ClientTests.fs" />
-    <Compile Include="Base.CharTests.fs" />
-    <Compile Include="Base.CorpTests.fs" />
+    <Compile Include="ClientTests.fs" />
+    <Compile Include="CharTests.fs" />
+    <Compile Include="CorpTests.fs" />
     <None Include="Script.fsx" />
     <None Include="packages.config" />
   </ItemGroup>
