@@ -6,14 +6,16 @@ module EveLib.Tests.TestUtils
     open System.Xml.Linq
     open EveLib
     open EveLib.FSharp
+    open Xunit
 
     /// Loads the api key from an xml file not in source control,
-    /// located in the "packasge" folder.
+    /// located in the "packages" folder.
     let apiKey =
         let asm = Assembly.GetExecutingAssembly()
-        let apiFile = Path.Combine(Path.GetDirectoryName(asm.Location), @"..\..\..\packages\ApiKey.xml")
+        let apiFile = @"D:\Users\Joel\Documents\Visual Studio 11\Projects\EveLib\packages\ApiKey.xml"
         let doc = XDocument.Load(apiFile)
         let root = doc.Root
         { Id = root.Element(xn "id") |> int
-          VCode = root.Element(xn "vCode") |> string
+          VCode = root.Element(xn "vCode").Value
           AccessMask = root.Element(xn "accessMask") |> int }
+

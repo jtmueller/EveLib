@@ -24,6 +24,10 @@ and RowSet(el:XElement) =
     member x.Columns = el.Attribute(xn "columns").Value.Split(',')
     member x.Rows = el.Elements(xn "row") |> Seq.map (fun r -> Row(r))
 
+type EveServerError(code:int, msg:string) =
+    inherit ApplicationException(msg)
+    member x.ErrorCode = code
+
 module internal ClientUtils =
     let baseUri = Uri("https://api.eveonline.com")
 
@@ -41,7 +45,12 @@ module internal ClientUtils =
         let version = root.Attribute(xn "version")
         if isNull version || version.Value <> "2" then failwith "Unsupported API Version"
         let queryTime = DateTimeOffset.Parse(root.Element(xn "currentTime").Value + " +0")
+        let error = root.Element(xn "error")
+        if isNotNull error then
+            raise <| EveServerError(error.Attribute(xn "code") |> int, error.Value)
         let result = root.Element(xn "result")
+        if isNull result then
+            failwith <| doc.ToString()
         let cachedUntil = DateTimeOffset.Parse(root.Element(xn "cachedUntil").Value + " +0") // server time is GMT
         { QueryTime = queryTime; CachedUntil = cachedUntil; Result = result }
 
