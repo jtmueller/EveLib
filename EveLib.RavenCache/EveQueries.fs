@@ -6,8 +6,6 @@ open Raven.Client
 open Raven.Client.Linq
 open EveLib
 
-// this breaks because "contains" is not supported by RavenDB
-
 type internal EveQueries(baseClient: FSharp.IEveQueries, store: IDocumentStore) =
 
     let getItemNames (ids:int[]) = async {
@@ -15,14 +13,9 @@ type internal EveQueries(baseClient: FSharp.IEveQueries, store: IDocumentStore) 
 
         // TODO: raven returns batches of 128 only.
         //       need to detect if more id's requested, use paging.
-        let! matches =
-            query {
-                for ni in session.Query<NamedItem>() do
-                where (LinqExtensions.In(ni.ItemId, ids))
-                select ni
-            } |> AsyncQuery.asIList
+        let! matches = session.AsyncLoad<NamedItem>(ids |> Array.map (sprintf "nameditems/%i"))
 
-        if matches.Count = 0 then
+        if matches.Length = 0 then
             let! updated = baseClient.GetItemNames(ids)
             updated |> Seq.iter session.Store
             do! session.AsyncSaveChanges()
@@ -36,19 +29,19 @@ type internal EveQueries(baseClient: FSharp.IEveQueries, store: IDocumentStore) 
 
             let missing =
                 stillGood
-                |> Seq.map (fun m -> m.ItemId)
+                |> Seq.map (fun m -> m.Id)
                 |> Set.ofSeq
                 |> Set.difference (ids |> Set.ofArray)
 
             let toLoad =
                 outdated
-                |> Seq.map (fun m -> m.ItemId)
+                |> Seq.map (fun m -> m.Id)
                 |> Seq.append missing
 
             if toLoad |> Seq.exists (fun _ -> true) then
                 let! updated = baseClient.GetItemNames(toLoad |> Array.ofSeq)
                 let merged = stillGood |> Seq.append updated |> Seq.cache
-                outdated |> List.iter session.Delete
+                outdated |> List.iter session.Advanced.Evict
                 merged |> Seq.iter session.Store
                 do! session.AsyncSaveChanges()
                 return merged
@@ -94,7 +87,7 @@ type internal EveQueries(baseClient: FSharp.IEveQueries, store: IDocumentStore) 
             if toLoad |> Seq.exists (fun _ -> true) then
                 let! updated = baseClient.GetItemIds(toLoad |> Array.ofSeq)
                 let merged = stillGood |> Seq.append updated |> Seq.cache
-                outdated |> List.iter session.Delete
+                outdated |> List.iter session.Advanced.Evict
                 merged |> Seq.iter session.Store
                 do! session.AsyncSaveChanges()
                 return merged

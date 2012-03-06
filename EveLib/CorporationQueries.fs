@@ -14,7 +14,7 @@ type internal CorporationQueries(apiValues: (string * string) list) =
         let! response = getResponse "/corp/AccountBalance.xml.aspx" values
         let rowset = RowSet(response.Result.Element(xn "rowset"))
         return {
-            CharacterId = charId
+            Id = charId
             Type = WalletType.Corporate
             Accounts =
                 rowset.Rows

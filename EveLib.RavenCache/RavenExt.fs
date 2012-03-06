@@ -10,6 +10,7 @@ open Newtonsoft.Json
 open Raven.Client.Document
 open Raven.Abstractions.Data
 open Raven.Client.Linq
+open EveLib.FSharp
 
 [<AutoOpen>]
 module RavenExt =
@@ -36,7 +37,7 @@ module RavenExt =
                 else 
                     t
             let value = serializer.Deserialize(reader, t)
-            if value <> null then
+            if isNotNull value then
                 FSharpValue.MakeUnion(cases.[1], [|value|])
             else
                 FSharpValue.MakeUnion(cases.[0], [||])
@@ -95,14 +96,22 @@ module RavenExt =
             store.Initialize()
 
     type Raven.Client.IAsyncDocumentSession with
-        member x.AsyncLoad(id: string) =
-            x.LoadAsync(id) |> Async.AwaitTask
+        member x.AsyncLoad(id: string) = async {
+            let! result = x.LoadAsync(id) |> Async.AwaitTask
+            if isNull result
+                then return None
+                else return Some result
+        }
 
         member x.AsyncLoad(ids: string[]) =
             x.LoadAsync(ids) |> Async.AwaitTask
 
-        member x.AsyncLoad(id: ValueType) =
-            x.LoadAsync(id) |> Async.AwaitTask
+        member x.AsyncLoad(id: ValueType) = async {
+            let! result = x.LoadAsync(id) |> Async.AwaitTask
+            if isNull result
+                then return None
+                else return Some result
+        }
 
         member x.AsyncSaveChanges() =
             x.SaveChangesAsync() |> (Async.AwaitIAsyncResult >> Async.Ignore)
@@ -134,5 +143,5 @@ module AsyncQuery =
         return 
             if items.Count = 0
                 then None
-                else Some(items.[0])
+                else Some items.[0]
     }

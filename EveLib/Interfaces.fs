@@ -18,7 +18,7 @@ type IEveQueries =
     abstract member GetItemNames : [<ParamArray>] ids : int[] -> Async<seq<NamedItem>>
 
 type IMapQueries =
-    abstract member GetRecentKills : unit -> Async<RecentKills>
+    abstract member GetRecentKills : unit -> Async<seq<SolarSystemKills>>
 
 type IEveClient =
     abstract member GetCharacters : unit -> Async<CharacterList>
@@ -46,7 +46,7 @@ type IEveQueries =
     abstract member GetItemNames : [<ParamArray>] ids : int[] -> Task<seq<NamedItem>>
 
 type IMapQueries =
-    abstract member GetRecentKills : unit -> Task<RecentKills>
+    abstract member GetRecentKills : unit -> Task<seq<SolarSystemKills>>
 
 type IEveClient =
     abstract member GetCharacters : unit -> Task<CharacterList>
@@ -73,7 +73,7 @@ type IEveQueries =
     abstract member GetItemNames : [<ParamArray>] ids : int[] -> seq<NamedItem>
 
 type IMapQueries =
-    abstract member GetRecentKills : unit -> RecentKills
+    abstract member GetRecentKills : unit -> seq<SolarSystemKills>
 
 type IEveClient =
     abstract member GetCharacters : unit -> CharacterList

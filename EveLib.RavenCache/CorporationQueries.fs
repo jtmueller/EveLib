@@ -13,7 +13,7 @@ type internal CorporationQueries(baseClient: FSharp.ICorpQueries, store: IDocume
         let! wallets =
             query {
                 for set in session.Query<WalletSet>() do
-                where (set.Type = WalletType.Corporate && set.CharacterId = charId)
+                where (set.Type = WalletType.Corporate && set.Id = charId)
                 select set
             } |> AsyncQuery.head
 
@@ -26,7 +26,7 @@ type internal CorporationQueries(baseClient: FSharp.ICorpQueries, store: IDocume
         | Some set when set.CachedUntil < DateTimeOffset.UtcNow ->
             try
                 let! updated = baseClient.GetAccountBalance(charId)
-                session.Delete(set)
+                session.Advanced.Evict set
                 session.Store(updated)
                 do! session.AsyncSaveChanges()
                 return updated

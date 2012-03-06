@@ -11,22 +11,24 @@ type internal MapQueries(baseClient: FSharp.IMapQueries, store: IDocumentStore) 
     let getRecentKills () = async {
         use session = store.OpenAsyncSession()
 
-        let! kills = session.Query<RecentKills>() |> AsyncQuery.head
+        // TODO: if there's more than 128 solar systems, must query in batches
+        let! kills = session.Query<SolarSystemKills>() |> AsyncQuery.asIList
 
-        match kills with
-        | None ->
+        if kills.Count = 0 then
             let! updated = baseClient.GetRecentKills()
-            session.Store(updated)
+            updated |> Seq.iter session.Store
             do! session.AsyncSaveChanges()
             return updated
-        | Some k when k.CachedUntil < DateTimeOffset.UtcNow ->
-            let! updated = baseClient.GetRecentKills()
-            session.Delete(k)
-            session.Store(updated)
-            do! session.AsyncSaveChanges()
-            return updated
-        | Some k ->
-            return k
+        else
+            let now = DateTimeOffset.UtcNow
+            if kills |> Seq.exists (fun k -> k.CachedUntil < now) then
+                let! updated = baseClient.GetRecentKills()
+                kills |> Seq.iter session.Advanced.Evict
+                updated |> Seq.iter session.Store
+                do! session.AsyncSaveChanges()
+                return updated
+            else
+                return upcast kills
     }
 
     interface EveLib.FSharp.IMapQueries with

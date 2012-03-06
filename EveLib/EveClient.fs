@@ -19,12 +19,12 @@ type EveClient (apiKey:ApiKey) =
         let! response = getResponse "/account/Characters.xml.aspx" apiValues
         let rowset = RowSet(response.Result.Element(xn "rowset"))
         return { 
-            KeyId = apiKey.Id;
+            Id = apiKey.Id;
             QueryTime = response.QueryTime;
             CachedUntil = response.CachedUntil;
             Characters =
                 rowset.Rows 
-                |> Seq.map (fun r -> { CharId = xval r?characterID; 
+                |> Seq.map (fun r -> { Id = xval r?characterID; 
                                        Name = xval r?name; 
                                        CorpId = xval r?corporationID; 
                                        CorpName = xval r?corporationName })

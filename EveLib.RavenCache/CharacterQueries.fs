@@ -13,21 +13,21 @@ type internal CharacterQueries(baseClient: FSharp.ICharQueries, store: IDocument
         let! wallets =
             query {
                 for set in session.Query<WalletSet>() do
-                where (set.Type = WalletType.Personal && set.CharacterId = charId)
+                where (set.Type = WalletType.Personal && set.Id = charId)
                 select set
             } |> AsyncQuery.head
 
         match wallets with
         | None ->
             let! updated = baseClient.GetAccountBalance(charId)
-            session.Store(updated)
+            session.Store updated
             do! session.AsyncSaveChanges()
             return updated
         | Some set when set.CachedUntil < DateTimeOffset.UtcNow ->
             try
                 let! updated = baseClient.GetAccountBalance(charId)
-                session.Delete(set)
-                session.Store(updated)
+                session.Advanced.Evict set
+                session.Store updated
                 do! session.AsyncSaveChanges()
                 return updated
             with _ ->

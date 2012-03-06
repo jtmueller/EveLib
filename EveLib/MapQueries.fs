@@ -12,17 +12,14 @@ type internal MapQueries(apiValues: (string * string) list) =
     let getRecentKills () = async {
         let! response = getResponse "/map/Kills.xml.aspx" []
         let rowset = RowSet(response.Result.Element(xn "rowset"))
-        return {
-            QueryTime = response.QueryTime
-            CachedUntil = response.CachedUntil
-            SolarSystems =
-                rowset.Rows
-                |> Seq.map (fun r -> { SolarSystemId = xval r?solarSystemID;
-                                       ShipKills = xval r?shipKills;
-                                       FactionKills = xval r?factionKills;
-                                       PodKills = xval r?podKills })
-                |> List.ofSeq
-        }
+        return 
+            rowset.Rows
+            |> Seq.map (fun r -> { Id = xval r?solarSystemID
+                                   ShipKills = xval r?shipKills
+                                   FactionKills = xval r?factionKills
+                                   PodKills = xval r?podKills
+                                   QueryTime = response.QueryTime
+                                   CachedUntil = response.CachedUntil })
     }
 
     interface EveLib.FSharp.IMapQueries with

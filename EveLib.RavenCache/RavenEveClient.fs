@@ -18,10 +18,12 @@ type RavenEveClient(apiKey:ApiKey) =
     let getCharacters () = async {
         use session = store.OpenAsyncSession()
 
-        let! charList = 
+        use foo = store.OpenSession()
+        //let! charList = session.AsyncLoad<CharacterList>(sprintf "characterlists/%i" apiKey.Id)
+        let! charList =
             query {
                 for cl in session.Query<CharacterList>() do
-                where (cl.KeyId = apiKey.Id)
+                where (cl.Id = apiKey.Id)
                 select cl
                 take 1
             } |> AsyncQuery.head
@@ -29,18 +31,15 @@ type RavenEveClient(apiKey:ApiKey) =
         match charList with
         | None ->
             let! updated = baseClient.GetCharacters()
-            session.Store(updated)
+            session.Store updated
             do! session.AsyncSaveChanges()
             return updated
         | Some cl when cl.CachedUntil < DateTimeOffset.UtcNow ->
-            try
-                let! updated = baseClient.GetCharacters()
-                session.Delete(cl)
-                session.Store(updated)
-                do! session.AsyncSaveChanges()
-                return updated
-            with _ ->
-                return cl
+            let! updated = baseClient.GetCharacters()
+            session.Advanced.Evict cl
+            session.Store updated
+            do! session.AsyncSaveChanges()
+            return updated
         | Some cl ->
             return cl
     }
@@ -53,14 +52,14 @@ type RavenEveClient(apiKey:ApiKey) =
         match status with
         | None ->
             let! updated = baseClient.GetServerStatus()
-            session.Store(updated)
+            session.Store updated
             do! session.AsyncSaveChanges()
             return updated
         | Some st when st.CachedUntil < DateTimeOffset.UtcNow ->
             try
                 let! updated = baseClient.GetServerStatus()
-                session.Delete(st)
-                session.Store(updated)
+                session.Advanced.Evict st
+                session.Store updated
                 do! session.AsyncSaveChanges()
                 return updated
             with _ ->

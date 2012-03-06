@@ -12,7 +12,7 @@ module EveLib.Tests.TestUtils
     /// located in the "packages" folder.
     let apiKey =
         let asm = Assembly.GetExecutingAssembly()
-        let apiFile = @"D:\Users\Joel\Documents\Visual Studio 11\Projects\EveLib\packages\ApiKey.xml"
+        let apiFile = @"D:\Projects\EveLib\packages\ApiKey.xml"
         let doc = XDocument.Load(apiFile)
         let root = doc.Root
         { Id = root.Element(xn "id") |> int

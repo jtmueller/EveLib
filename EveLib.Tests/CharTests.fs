@@ -11,11 +11,11 @@ type BaseCharTests(clientFactory: unit -> FSharp.IEveClient) =
     let ``Can get account balance`` () =
         async {
             let client = clientFactory()
-            let! charInfo = client.Eve.GetItemIds("Sigur Yassavi")
-            let subject = charInfo |> Seq.head
-            let! wallets = client.Character.GetAccountBalance(subject.ItemId)
-            Assert.Equal(subject.ItemId, wallets.CharacterId)
+            let! charInfo = client.GetCharacters()
+            let subject = charInfo.Characters |> Seq.head
+            let! wallets = client.Character.GetAccountBalance(subject.Id)
             Assert.NotEmpty(wallets.Accounts)
+            Assert.Equal(subject.Id, wallets.Id)
         } |> Async.StartAsTask
 
 type RavenCharTests() =

@@ -14,7 +14,7 @@ type internal EveQueries(apiValues: (string * string) list) =
         let! response = getResponse "/eve/CharacterName.xml.aspx" values
         let rowset = RowSet(response.Result.Element(xn "rowset"))
         return rowset.Rows
-               |> Seq.map (fun r -> { Name = xval r?name; ItemId = xval r?characterID; CachedUntil = response.CachedUntil })
+               |> Seq.map (fun r -> { Name = xval r?name; Id = xval r?characterID; CachedUntil = response.CachedUntil })
                |> Seq.cache
     }
 
@@ -23,7 +23,7 @@ type internal EveQueries(apiValues: (string * string) list) =
         let! response = getResponse "/eve/CharacterID.xml.aspx" values
         let rowset = RowSet(response.Result.Element(xn "rowset"))
         return rowset.Rows
-               |> Seq.map (fun r -> { Name = xval r?name; ItemId = xval r?characterID; CachedUntil = response.CachedUntil })
+               |> Seq.map (fun r -> { Name = xval r?name; Id = xval r?characterID; CachedUntil = response.CachedUntil })
                |> Seq.cache
     }
 

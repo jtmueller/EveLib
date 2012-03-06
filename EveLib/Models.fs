@@ -18,24 +18,24 @@ type ServerStatus = {
 }
 
 type Character = 
-    { CharId : int
+    { Id : int
       Name : string
       CorpId : int
       CorpName : string }
     with
         member x.PortraitUrl =
-            sprintf "http://image.eveonline.com/Character/%i_128.jpg" x.CharId
+            sprintf "http://image.eveonline.com/Character/%i_128.jpg" x.Id
 
 type CharacterList = {
-    KeyId : int
+    Id : int
     Characters : seq<Character>
     QueryTime : DateTimeOffset
     CachedUntil : DateTimeOffset
 }
 
 type NamedItem = {
+    Id : int
     Name : string
-    ItemId : int
     CachedUntil : DateTimeOffset
 }
 
@@ -50,7 +50,7 @@ type WalletAccount = {
 }
 
 type WalletSet = {
-    CharacterId : int
+    mutable Id : int
     Type : WalletType
     Accounts : seq<WalletAccount>
     QueryTime : DateTimeOffset
@@ -58,20 +58,16 @@ type WalletSet = {
 }
 
 type SolarSystemKills = {
-    SolarSystemId : int
+    Id : int
     ShipKills : int
     FactionKills : int
     PodKills : int
-}
-
-type RecentKills = {
-    SolarSystems : seq<SolarSystemKills>
     QueryTime : DateTimeOffset
     CachedUntil : DateTimeOffset
 }
 
 type MailHeader = {
-    MessageId : int
+    Id : int
     SenderId : int
     SentDate : DateTimeOffset
     Title : string
@@ -81,14 +77,14 @@ type MailHeader = {
 }
 
 type MailHeaderList = {
-    CharacterId : int
+    Id : int
     MailHeaders : seq<MailHeader>
     QueryTime : DateTimeOffset
     CachedUntil : DateTimeOffset
 }
 
 type MailBody = {
-    MessageId : int
+    Id : int
     Text : string
     QueryTime : DateTimeOffset
     CachedUntil : DateTimeOffset
