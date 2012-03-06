@@ -7,6 +7,7 @@ open EveLib
 
 type RavenEveClient(apiKey:ApiKey) =
 
+    // TODO: get config or let the store be passed in.
     static let store = Document.DocumentStore.OpenInitializedStore()
 
     let baseClient = EveClient.CreateFSharp apiKey
@@ -18,7 +19,6 @@ type RavenEveClient(apiKey:ApiKey) =
     let getCharacters () = async {
         use session = store.OpenAsyncSession()
 
-        use foo = store.OpenSession()
         //let! charList = session.AsyncLoad<CharacterList>(sprintf "characterlists/%i" apiKey.Id)
         let! charList =
             query {
