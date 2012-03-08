@@ -19,14 +19,7 @@ type RavenEveClient(apiKey:ApiKey) =
     let getCharacters () = async {
         use session = store.OpenAsyncSession()
 
-        //let! charList = session.AsyncLoad<CharacterList>(sprintf "characterlists/%i" apiKey.Id)
-        let! charList =
-            query {
-                for cl in session.Query<CharacterList>() do
-                where (cl.Id = apiKey.Id)
-                select cl
-                take 1
-            } |> AsyncQuery.head
+        let! charList = session.AsyncLoad<CharacterList>(sprintf "characterlists/%i" apiKey.Id)
 
         match charList with
         | None ->

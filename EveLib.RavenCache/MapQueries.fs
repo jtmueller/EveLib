@@ -22,8 +22,11 @@ type internal MapQueries(baseClient: FSharp.IMapQueries, store: IDocumentStore) 
         else
             let now = DateTimeOffset.UtcNow
             if kills |> Seq.exists (fun k -> k.CachedUntil < now) then
-                let! updated = baseClient.GetRecentKills()
+                // we've got at least one expired kill record, so query again
+                kills |> Seq.iter session.Delete
+                do! session.AsyncSaveChanges()
                 kills |> Seq.iter session.Advanced.Evict
+                let! updated = baseClient.GetRecentKills()
                 updated |> Seq.iter session.Store
                 do! session.AsyncSaveChanges()
                 return updated

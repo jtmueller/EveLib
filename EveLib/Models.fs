@@ -18,7 +18,7 @@ type ServerStatus = {
 }
 
 type Character = 
-    { Id : int
+    { mutable Id : int
       Name : string
       CorpId : int
       CorpName : string }
@@ -27,14 +27,14 @@ type Character =
             sprintf "http://image.eveonline.com/Character/%i_128.jpg" x.Id
 
 type CharacterList = {
-    Id : int
+    mutable Id : int
     Characters : seq<Character>
     QueryTime : DateTimeOffset
     CachedUntil : DateTimeOffset
 }
 
 type NamedItem = {
-    Id : int
+    mutable Id : int
     Name : string
     CachedUntil : DateTimeOffset
 }
@@ -58,7 +58,7 @@ type WalletSet = {
 }
 
 type SolarSystemKills = {
-    Id : int
+    mutable Id : int
     ShipKills : int
     FactionKills : int
     PodKills : int
@@ -77,14 +77,14 @@ type MailHeader = {
 }
 
 type MailHeaderList = {
-    Id : int
+    mutable Id : int
     MailHeaders : seq<MailHeader>
     QueryTime : DateTimeOffset
     CachedUntil : DateTimeOffset
 }
 
 type MailBody = {
-    Id : int
+    mutable Id : int
     Text : string
     QueryTime : DateTimeOffset
     CachedUntil : DateTimeOffset

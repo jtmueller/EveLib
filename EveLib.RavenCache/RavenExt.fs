@@ -97,10 +97,15 @@ module RavenExt =
 
     type Raven.Client.IAsyncDocumentSession with
         member x.AsyncLoad(id: string) = async {
-            let! result = x.LoadAsync(id) |> Async.AwaitTask
-            if isNull result
-                then return None
-                else return Some result
+            try
+                let! result = x.LoadAsync(id) |> Async.AwaitTask
+                if isNull result
+                    then return None
+                    else return Some result
+            with :? AggregateException ->
+                // NOTE: this excepting hiding is temporary because a bug in the Raven client
+                // throws an exception when the server returns 404 Not Found.
+                return None
         }
 
         member x.AsyncLoad(ids: string[]) =

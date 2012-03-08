@@ -13,15 +13,15 @@ type internal EveQueries(baseClient: FSharp.IEveQueries, store: IDocumentStore) 
 
         // TODO: raven returns batches of 128 only.
         //       need to detect if more id's requested, use paging.
-        //let! matches = session.AsyncLoad<NamedItem>(ids |> Array.map (sprintf "nameditems/%i"))
-        let! matches =
-            query {
-                for item in session.Query<NamedItem>() do
-                where (LinqExtensions.In(item.Id, ids))
-                select item
-            } |> AsyncQuery.asIList
+        let! matches = session.AsyncLoad<NamedItem>(ids |> Array.map (sprintf "nameditems/%i"))
+//        let! matches =
+//            query {
+//                for item in session.Query<NamedItem>() do
+//                where (LinqExtensions.In(item.Id, ids))
+//                select item
+//            } |> AsyncQuery.asIList
 
-        if matches.Count = 0 then
+        if matches.Length = 0 then
             let! updated = baseClient.GetItemNames(ids)
             updated |> Seq.iter session.Store
             do! session.AsyncSaveChanges()
@@ -30,7 +30,7 @@ type internal EveQueries(baseClient: FSharp.IEveQueries, store: IDocumentStore) 
             let outdated, stillGood =
                 let now = DateTimeOffset.UtcNow
                 matches
-                |> List.ofSeq 
+                |> List.ofArray 
                 |> List.partition (fun m -> m.CachedUntil < now)
 
             let missing =

@@ -15,6 +15,22 @@ module Extensions =
     let ns = XNamespace.op_Implicit
     let xn = XName.op_Implicit
     let inline xval (x : ^a when ^a :> XObject) : ^b = ((^a or ^b) : (static member op_Explicit : ^a -> ^b) x)
+
+    let (|Element|_|) name (node:XElement) =
+        if isNull node then
+            None
+        elif node.Name.LocalName = name then
+            Some node
+        else
+            None
+
+    let (|Attribute|_|) name (attr:XAttribute) =
+        if isNull attr then
+            None
+        elif attr.Name.LocalName = name then
+            Some attr
+        else
+            None
     
     type WebRequest with
         member x.AsyncGetRequestStream() =

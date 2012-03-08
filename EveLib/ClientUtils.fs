@@ -39,20 +39,29 @@ module internal ClientUtils =
         Result : XElement
     }
 
+    let private parseDateEl (el:XElement) =
+        if isNull el then
+            DateTimeOffset.MinValue
+        else
+            el.Value + " +0"  // eve server time is GMT
+            |> DateTimeOffset.Parse
+
     let parseDoc (doc:XDocument) =
-        let root = doc.Root
-        if root.Name.LocalName <> "eveapi" then failwith ("Unexpected tag: " + root.Name.LocalName)
-        let version = root.Attribute(xn "version")
-        if isNull version || version.Value <> "2" then failwith "Unsupported API Version"
-        let queryTime = DateTimeOffset.Parse(root.Element(xn "currentTime").Value + " +0")
-        let error = root.Element(xn "error")
-        if isNotNull error then
-            raise <| EveServerError(error.Attribute(xn "code") |> int, error.Value)
-        let result = root.Element(xn "result")
-        if isNull result then
-            failwith <| doc.ToString()
-        let cachedUntil = DateTimeOffset.Parse(root.Element(xn "cachedUntil").Value + " +0") // server time is GMT
-        { QueryTime = queryTime; CachedUntil = cachedUntil; Result = result }
+        match doc.Root, doc.Root.Attribute(xn "version") with
+        | Element "eveapi" root, Attribute "version" ver when ver.Value = "2" ->
+            match root.Element(xn "error"), root.Element(xn "result") with
+            | Element "error" error, _ ->
+                raise <| EveServerError(error.Attribute(xn "code") |> int, error.Value)
+            | _, Element "result" result ->
+                let queryTime = root.Element(xn "currentTime") |> parseDateEl
+                let cachedUntil = root.Element(xn "cachedUntil") |> parseDateEl
+                { QueryTime = queryTime; CachedUntil = cachedUntil; Result = result }
+            | _ ->
+                failwith "Could not find either error or result tag."
+        | Element "eveapi" _, _ ->
+            failwith "Unsupported API version."
+        | _ ->
+            failwithf "Unexpected tag: %s" doc.Root.Name.LocalName
 
     let getResponse path values = async {
         let postData =
