@@ -8,7 +8,7 @@ open Xunit
 type BaseClientTests(clientFactory: unit -> FSharp.IEveClient) =
 
     [<Fact>]
-    let ``Can Get Characters`` () = 
+    let ``Can get characters`` () = 
         async {
             let client = clientFactory()
             let! charList = client.GetCharacters()
@@ -18,7 +18,7 @@ type BaseClientTests(clientFactory: unit -> FSharp.IEveClient) =
         } |> Async.StartAsTask
 
     [<Fact>]
-    let ``Can Get Characters Again`` () = 
+    let ``Can get characters again`` () = 
         async {
             let client = clientFactory()
             let! charList = client.GetCharacters()
@@ -41,6 +41,7 @@ type BaseClientTests(clientFactory: unit -> FSharp.IEveClient) =
             let client = clientFactory()
             let! kills = client.Map.GetRecentKills()
             Assert.NotEmpty(kills)
+            Assert.True(kills |> Seq.length > 128)
         } |> Async.StartAsTask
 
 
