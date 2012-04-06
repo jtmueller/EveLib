@@ -67,18 +67,14 @@ type SolarSystemKills = {
 }
 
 type MailHeader = {
-    Id : int
+    mutable Id : int
+    RecipientId : int
     SenderId : int
     SentDate : DateTimeOffset
     Title : string
     ToCorpOrAllianceId : int option
     ToCharacterIds : seq<int>
     ToListIds : seq<int>
-}
-
-type MailHeaderList = {
-    mutable Id : int
-    MailHeaders : seq<MailHeader>
     QueryTime : DateTimeOffset
     CachedUntil : DateTimeOffset
 }

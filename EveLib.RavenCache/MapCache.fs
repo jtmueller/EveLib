@@ -5,7 +5,7 @@ open Raven.Client
 open Raven.Client.Linq
 open EveLib
 
-type internal MapQueries(baseClient: FSharp.IMapQueries, store: IDocumentStore) =
+type internal MapCache(baseClient: FSharp.IMapQueries, store: IDocumentStore) =
 
     let pageSize = 128
 
@@ -29,7 +29,7 @@ type internal MapQueries(baseClient: FSharp.IMapQueries, store: IDocumentStore) 
             do! session.AsyncSaveChanges()
             return updated
         else
-            // Query returns only first 128 kills. Keep querying until we have them all
+            // Query returns 128 kills at a time. Keep querying until we have them all.
             let go = ref true
             while !go do
                 let! nextPage = getKills session kills.Count

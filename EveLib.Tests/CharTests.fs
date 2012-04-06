@@ -18,5 +18,15 @@ type BaseCharTests(clientFactory: unit -> FSharp.IEveClient) =
             Assert.Equal(subject.Id, wallets.Id)
         } |> Async.StartAsTask
 
+    [<Fact>]
+    let ``Can get mail headers`` () =
+        async {
+            let client = clientFactory()
+            let! charInfo = client.GetCharacters()
+            let subject = charInfo.Characters |> Seq.head
+            let! mailHeaders = client.Character.GetMailHeaders(subject.Id)
+            Assert.NotEmpty(mailHeaders)
+        } |> Async.StartAsTask
+
 type RavenCharTests() =
     inherit BaseCharTests(fun () -> upcast EveLib.RavenCache.RavenEveClient(apiKey))

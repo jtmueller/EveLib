@@ -15,6 +15,10 @@ module Extensions =
     let ns = XNamespace.op_Implicit
     let xn = XName.op_Implicit
     let inline xval (x : ^a when ^a :> XObject) : ^b = ((^a or ^b) : (static member op_Explicit : ^a -> ^b) x)
+    let inline xopt (x: #XAttribute) =
+        if isNull x then None
+        elif String.IsNullOrEmpty(x.Value) then None
+        else Some(xval x)
 
     let (|Element|_|) name (node:XElement) =
         if isNull node then

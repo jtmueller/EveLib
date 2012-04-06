@@ -7,8 +7,9 @@ open EveLib
 
 type ICharQueries =
     abstract member GetAccountBalance : int -> Async<WalletSet>
-    //abstract member GetMailHeaders : int -> Async<MailHeaderList>
-    //abstract member GetMailBodies : int -> Async<MailBodyList>
+    abstract member GetMailHeaders : int -> Async<seq<MailHeader>>
+    //abstract member GetMailBodies : seq<int> -> Async<seq<MailBody>>
+    //abstract member GetMailBody : int -> Async<MailBody>
 
 type ICorpQueries =
     abstract member GetAccountBalance : int -> Async<WalletSet>
@@ -35,8 +36,9 @@ open EveLib
 
 type ICharQueries =
     abstract member GetAccountBalance : int -> Task<WalletSet>
-    //abstract member GetMailHeaders : int -> Task<MailHeaderList>
-    //abstract member GetMailBodies : int -> Task<MailBodyList>
+    abstract member GetMailHeaders : int -> Task<seq<MailHeader>>
+    //abstract member GetMailBodies : seq<int> -> Task<seq<MailBody>>
+    //abstract member GetMailBody : int -> Task<MailBody>
 
 type ICorpQueries =
     abstract member GetAccountBalance : int -> Task<WalletSet>
@@ -62,8 +64,9 @@ open EveLib
 
 type ICharQueries =
     abstract member GetAccountBalance : int -> WalletSet
-    //abstract member GetMailHeaders : int -> MailHeaderList
-    //abstract member GetMailBodies : int -> MailBodyList
+    abstract member GetMailHeaders : int -> seq<MailHeader>
+    //abstract member GetMailBodies : seq<int> -> seq<MailBody>
+    //abstract member GetMailBody : int -> MailBody
 
 type ICorpQueries =
     abstract member GetAccountBalance : int -> WalletSet

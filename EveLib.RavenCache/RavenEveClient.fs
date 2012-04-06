@@ -11,10 +11,10 @@ type RavenEveClient(apiKey:ApiKey) =
     static let store = Document.DocumentStore.OpenInitializedStore()
 
     let baseClient = EveClient.CreateFSharp apiKey
-    let character = lazy( CharacterQueries(baseClient.Character, store) )
-    let corporation = lazy( CorporationQueries(baseClient.Corporation, store) )
-    let eve = lazy( EveQueries(baseClient.Eve, store) )
-    let map = lazy( MapQueries(baseClient.Map, store) )
+    let character = lazy( CharacterCache(baseClient.Character, store) )
+    let corporation = lazy( CorporationCache(baseClient.Corporation, store) )
+    let eve = lazy( EveCache(baseClient.Eve, store) )
+    let map = lazy( MapCache(baseClient.Map, store) )
 
     let getCharacters () = async {
         use session = store.OpenAsyncSession()

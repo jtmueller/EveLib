@@ -18,16 +18,6 @@ type BaseClientTests(clientFactory: unit -> FSharp.IEveClient) =
         } |> Async.StartAsTask
 
     [<Fact>]
-    let ``Can get characters again`` () = 
-        async {
-            let client = clientFactory()
-            let! charList = client.GetCharacters()
-            Assert.NotEmpty charList.Characters
-            let subject = charList.Characters |> Seq.last
-            Assert.False(String.IsNullOrEmpty(subject.Name))
-        } |> Async.StartAsTask
-
-    [<Fact>]
     let ``Can get server status`` () =
         async {
             let client = clientFactory()

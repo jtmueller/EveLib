@@ -6,7 +6,7 @@ open Raven.Client
 open Raven.Client.Linq
 open EveLib
 
-type internal EveQueries(baseClient: FSharp.IEveQueries, store: IDocumentStore) =
+type internal EveCache(baseClient: FSharp.IEveQueries, store: IDocumentStore) =
 
     let getItemNames (ids:int[]) = async {
         use session = store.OpenAsyncSession()

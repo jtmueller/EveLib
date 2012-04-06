@@ -5,7 +5,7 @@ open Raven.Client
 open Raven.Client.Linq
 open EveLib
 
-type internal CorporationQueries(baseClient: FSharp.ICorpQueries, store: IDocumentStore) =
+type internal CorporationCache(baseClient: FSharp.ICorpQueries, store: IDocumentStore) =
 
     let getAccountBalance charId = async {
         use session = store.OpenAsyncSession()

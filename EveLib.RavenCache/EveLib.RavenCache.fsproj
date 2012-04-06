@@ -39,10 +39,10 @@
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <ItemGroup>
     <Compile Include="RavenExt.fs" />
-    <Compile Include="CharacterQueries.fs" />
-    <Compile Include="CorporationQueries.fs" />
-    <Compile Include="EveQueries.fs" />
-    <Compile Include="MapQueries.fs" />
+    <Compile Include="CharacterCache.fs" />
+    <Compile Include="CorporationCache.fs" />
+    <Compile Include="EveCache.fs" />
+    <Compile Include="MapCache.fs" />
     <Compile Include="RavenEveClient.fs" />
     <None Include="Script.fsx" />
     <None Include="packages.config" />
@@ -61,15 +61,15 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Raven.Abstractions">
-      <HintPath>..\packages\RavenDB.1.0.726-Unstable\lib\net40\Raven.Abstractions.dll</HintPath>
+      <HintPath>..\packages\RavenDB.1.0.888\lib\net40\Raven.Abstractions.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Raven.Client.Debug">
-      <HintPath>..\packages\RavenDB.1.0.726-Unstable\lib\net40\Raven.Client.Debug.dll</HintPath>
+      <HintPath>..\packages\RavenDB.1.0.888\lib\net40\Raven.Client.Debug.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Raven.Client.Lightweight">
-      <HintPath>..\packages\RavenDB.1.0.726-Unstable\lib\net40\Raven.Client.Lightweight.dll</HintPath>
+      <HintPath>..\packages\RavenDB.1.0.888\lib\net40\Raven.Client.Lightweight.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
