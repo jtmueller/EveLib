@@ -81,6 +81,7 @@ type MailHeader = {
 
 type MailBody = {
     mutable Id : int
+    RecipientId : int
     Text : string
     QueryTime : DateTimeOffset
     CachedUntil : DateTimeOffset

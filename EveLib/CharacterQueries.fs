@@ -51,12 +51,29 @@ type internal CharacterQueries(apiValues: (string * string) list) =
             |> Seq.cache
     }
 
+    let getMailBodies charId (messageIds:int seq) = async {
+        let values = ("characterID", string charId) :: ("ids", String.Join(",", messageIds)) :: apiValues
+        let! response = getResponse "/char/MailBodies.xml.aspx" values
+        let rowset = RowSet(response.Result.Element(xn "rowset"))
+        return
+            rowset.Rows
+            |> Seq.map (fun r -> { Id = xval r?messageID 
+                                   RecipientId = charId
+                                   Text = r.Element.Value 
+                                   QueryTime = response.QueryTime 
+                                   CachedUntil = response.CachedUntil })
+            |> Seq.cache
+    }
+
     interface EveLib.FSharp.ICharQueries with
         member x.GetAccountBalance(charId) = getAccountBalance charId
         member x.GetMailHeaders(charId) = getMailHeaders charId
+        member x.GetMailBodies(charId, msgIds) = getMailBodies charId msgIds
     interface EveLib.Async.ICharQueries with
         member x.GetAccountBalance(charId) = getAccountBalance charId |> Async.StartAsTask
         member x.GetMailHeaders(charId) = getMailHeaders charId |> Async.StartAsTask
+        member x.GetMailBodies(charId, msgIds) = getMailBodies charId msgIds |> Async.StartAsTask
     interface EveLib.Sync.ICharQueries with
         member x.GetAccountBalance(charId) = getAccountBalance charId |> Async.RunSynchronously
         member x.GetMailHeaders(charId) = getMailHeaders charId |> Async.RunSynchronously
+        member x.GetMailBodies(charId, msgIds) = getMailBodies charId msgIds |> Async.RunSynchronously

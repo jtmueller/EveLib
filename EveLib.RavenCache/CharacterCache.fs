@@ -66,6 +66,7 @@ type internal CharacterCache(baseClient: FSharp.ICharQueries, store: IDocumentSt
                     headers
                     |> Seq.filter (fun h -> h.CachedUntil < DateTimeOffset.UtcNow)
                     |> Seq.append updated
+                    |> Seq.distinctBy (fun h -> h.Id, h.RecipientId)
                 return query {
                     for h in merged do
                     sortByDescending h.SentDate
@@ -74,12 +75,46 @@ type internal CharacterCache(baseClient: FSharp.ICharQueries, store: IDocumentSt
                 return upcast headers
     }
 
+    let getMailBodies charId messageIds = async {
+        use session = store.OpenAsyncSession()
+
+        let! bodies =
+            query {
+                for b in session.Query<MailBody>() do
+                where (b.RecipientId = charId && 
+                       LinqExtensions.In(b.Id, messageIds))
+            } |> AsyncQuery.asIList
+
+        if bodies.Count = 0 || bodies.Count < Seq.length messageIds then
+            let! updated = baseClient.GetMailBodies(charId, messageIds)
+            bodies |> Seq.iter session.Advanced.Evict
+            updated |> Seq.iter session.Store
+            do! session.AsyncSaveChanges()
+            if bodies.Count = 0 then
+                return updated
+            else
+                return
+                    bodies
+                    |> Seq.filter (fun b -> b.CachedUntil < DateTimeOffset.UtcNow)
+                    |> Seq.append updated
+                    |> Seq.distinctBy (fun b -> b.Id, b.RecipientId)
+                    |> Seq.cache
+        else
+            return upcast bodies
+    }
+
     interface EveLib.FSharp.ICharQueries with
         member x.GetAccountBalance(charId) = getAccountBalance charId
         member x.GetMailHeaders(charId) = getMailHeaders charId
+        member x.GetMailBodies(charId, [<ParamArray>] messageIds) = 
+            getMailBodies charId messageIds
     interface EveLib.Async.ICharQueries with
         member x.GetAccountBalance(charId) = getAccountBalance charId |> Async.StartAsTask
         member x.GetMailHeaders(charId) = getMailHeaders charId |> Async.StartAsTask
+        member x.GetMailBodies(charId, [<ParamArray>] messageIds) = 
+            getMailBodies charId messageIds |> Async.StartAsTask
     interface EveLib.Sync.ICharQueries with
         member x.GetAccountBalance(charId) = getAccountBalance charId |> Async.RunSynchronously
         member x.GetMailHeaders(charId) = getMailHeaders charId |> Async.RunSynchronously
+        member x.GetMailBodies(charId, [<ParamArray>] messageIds) = 
+            getMailBodies charId messageIds |> Async.RunSynchronously

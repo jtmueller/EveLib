@@ -6,17 +6,16 @@ open EveLib
 // http://community.eveonline.com/community/toolkit.asp
 
 type ICharQueries =
-    abstract member GetAccountBalance : int -> Async<WalletSet>
-    abstract member GetMailHeaders : int -> Async<seq<MailHeader>>
-    //abstract member GetMailBodies : seq<int> -> Async<seq<MailBody>>
-    //abstract member GetMailBody : int -> Async<MailBody>
+    abstract member GetAccountBalance : charId:int -> Async<WalletSet>
+    abstract member GetMailHeaders : charId:int -> Async<seq<MailHeader>>
+    abstract member GetMailBodies : charId:int * [<ParamArray>] messageIds:int[] -> Async<seq<MailBody>>
 
 type ICorpQueries =
-    abstract member GetAccountBalance : int -> Async<WalletSet>
+    abstract member GetAccountBalance : corpId:int -> Async<WalletSet>
 
 type IEveQueries =
-    abstract member GetItemIds : [<ParamArray>] names : string[] -> Async<seq<NamedItem>>
-    abstract member GetItemNames : [<ParamArray>] ids : int[] -> Async<seq<NamedItem>>
+    abstract member GetItemIds : [<ParamArray>] names:string[] -> Async<seq<NamedItem>>
+    abstract member GetItemNames : [<ParamArray>] ids:int[] -> Async<seq<NamedItem>>
 
 type IMapQueries =
     abstract member GetRecentKills : unit -> Async<seq<SolarSystemKills>>
@@ -35,17 +34,16 @@ open System.Threading.Tasks
 open EveLib
 
 type ICharQueries =
-    abstract member GetAccountBalance : int -> Task<WalletSet>
-    abstract member GetMailHeaders : int -> Task<seq<MailHeader>>
-    //abstract member GetMailBodies : seq<int> -> Task<seq<MailBody>>
-    //abstract member GetMailBody : int -> Task<MailBody>
+    abstract member GetAccountBalance : charId:int -> Task<WalletSet>
+    abstract member GetMailHeaders : charId:int -> Task<seq<MailHeader>>
+    abstract member GetMailBodies : charId:int * [<ParamArray>] messageIds:int[] -> Task<seq<MailBody>>
 
 type ICorpQueries =
-    abstract member GetAccountBalance : int -> Task<WalletSet>
+    abstract member GetAccountBalance : corpId:int -> Task<WalletSet>
 
 type IEveQueries =
-    abstract member GetItemIds : [<ParamArray>] names : string[] -> Task<seq<NamedItem>>
-    abstract member GetItemNames : [<ParamArray>] ids : int[] -> Task<seq<NamedItem>>
+    abstract member GetItemIds : [<ParamArray>] names:string[] -> Task<seq<NamedItem>>
+    abstract member GetItemNames : [<ParamArray>] ids:int[] -> Task<seq<NamedItem>>
 
 type IMapQueries =
     abstract member GetRecentKills : unit -> Task<seq<SolarSystemKills>>
@@ -63,17 +61,16 @@ open System
 open EveLib
 
 type ICharQueries =
-    abstract member GetAccountBalance : int -> WalletSet
-    abstract member GetMailHeaders : int -> seq<MailHeader>
-    //abstract member GetMailBodies : seq<int> -> seq<MailBody>
-    //abstract member GetMailBody : int -> MailBody
+    abstract member GetAccountBalance : charId:int -> WalletSet
+    abstract member GetMailHeaders : charId:int -> seq<MailHeader>
+    abstract member GetMailBodies : charId:int * [<ParamArray>] messageIds:int[] -> seq<MailBody>
 
 type ICorpQueries =
-    abstract member GetAccountBalance : int -> WalletSet
+    abstract member GetAccountBalance : corpId:int -> WalletSet
 
 type IEveQueries =
-    abstract member GetItemIds : [<ParamArray>] names : string[] -> seq<NamedItem>
-    abstract member GetItemNames : [<ParamArray>] ids : int[] -> seq<NamedItem>
+    abstract member GetItemIds : [<ParamArray>] names:string[] -> seq<NamedItem>
+    abstract member GetItemNames : [<ParamArray>] ids:int[] -> seq<NamedItem>
 
 type IMapQueries =
     abstract member GetRecentKills : unit -> seq<SolarSystemKills>

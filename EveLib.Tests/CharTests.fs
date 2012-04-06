@@ -28,5 +28,16 @@ type BaseCharTests(clientFactory: unit -> FSharp.IEveClient) =
             Assert.NotEmpty(mailHeaders)
         } |> Async.StartAsTask
 
+    [<Fact>]
+    let ``Can get mail bodies`` () =
+        async {
+            let client = clientFactory()
+            let! charInfo = client.GetCharacters()
+            let subject = charInfo.Characters |> Seq.head
+            let! mailHeaders = client.Character.GetMailHeaders(subject.Id)
+            let! mailBodies = client.Character.GetMailBodies(subject.Id, mailHeaders |> Seq.map (fun h -> h.Id) |> Array.ofSeq)
+            Assert.NotEmpty(mailBodies)
+        } |> Async.StartAsTask
+
 type RavenCharTests() =
     inherit BaseCharTests(fun () -> upcast EveLib.RavenCache.RavenEveClient(apiKey))
