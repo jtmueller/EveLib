@@ -65,15 +65,101 @@ type internal CharacterQueries(apiValues: (string * string) list) =
             |> Seq.cache
     }
 
+    let getCharSheet charId = async {
+        let values =  ("characterID", string charId) :: apiValues
+        let toAugment (el:XElement) =
+            if isNull el then None
+            else Some { AugmentName = xelv "augmentatorName" el; AugmentValue = xelv "augmentatorValue" el }
+        let toRole row =
+            { RoleId = xval row?roleID; RoleName = xval row?roleName }
+        let findRowset name (el:XElement) =
+            el.Elements(xn "rowset")
+            |> Seq.tryFind (fun x -> x.Attribute(xn "name").Value = name)
+            |> Option.map (fun x -> RowSet(x))
+
+        let! response = getResponse "/char/CharacterSheet.xml.aspx" values
+        let r = response.Result
+        let enhancers = r.Element(xn "attributeEnhancers")
+        let attributes = r.Element(xn "attributes")
+
+        return {
+            Id = xelv "characterID" r
+            CharacterName = xelv "name" r
+            DoB = (xelv "DoB" r) + " +0" |> DateTimeOffset.Parse
+            Race = xelv "race" r
+            Bloodline = xelv "bloodLine" r
+            Ancestry = xelv "ancestry" r
+            Gender = xelv "gender" r
+            CorpName = xelv "corporationName" r
+            CorpId = xelv "corporationID" r
+            AllianceName = xelvo "allianceName" r
+            AllianceId = xelvo "allianceID" r
+            CloneName = xelv "cloneName" r
+            CloneSkillPoints = xelv "cloneSkillPoints" r
+            Balance = xelv "balance" r
+            AttributeEnhancers = 
+                { MemoryBonus = enhancers.Element(xn "memoryBonus") |> toAugment
+                  PerceptionBonus = enhancers.Element(xn "perceptionBonus") |> toAugment
+                  WillpowerBonus = enhancers.Element(xn "willpowerBonus") |> toAugment
+                  IntelligenceBonus = enhancers.Element(xn "intelligenceBonus") |> toAugment
+                  CharismaBonus = enhancers.Element(xn "charismaBonus") |> toAugment }
+            Attributes = 
+                { Intelligence = xelv "intelligence" attributes
+                  Memory = xelv "memory" attributes
+                  Charisma = xelv "charisma" attributes
+                  Perception = xelv "perception" attributes
+                  Willpower = xelv "willpower" attributes }
+            Skills = 
+                match findRowset "skills" r with
+                | None -> Seq.empty
+                | Some rs ->
+                    rs.Rows
+                    |> Seq.map (fun s -> { TypeId = xval s?typeID
+                                           SkillPoints = xval s?skillpoints
+                                           Level = xval s?level
+                                           Published = (string s?published = "1") })
+                    |> Seq.cache
+            Certificates =
+                match findRowset "certificates" r with
+                | None -> Seq.empty
+                | Some rs -> rs.Rows |> Seq.map (fun c -> int c?certificateID)
+            CorpRoles =
+                match findRowset "corporationRoles" r with
+                | None -> Seq.empty
+                | Some rs -> rs.Rows |> Seq.map toRole
+            CorpRolesAtHQ =
+                match findRowset "corporationRolesAtHQ" r with
+                | None -> Seq.empty
+                | Some rs -> rs.Rows |> Seq.map toRole
+            CorpRolesAtBase =
+                match findRowset "corporationRolesAtBase" r with
+                | None -> Seq.empty
+                | Some rs -> rs.Rows |> Seq.map toRole
+            CorpRolesAtOther =
+                match findRowset "corporationRoles" r with
+                | None -> Seq.empty
+                | Some rs -> rs.Rows |> Seq.map toRole
+            CorpTitles =
+                match findRowset "corporationTitles" r with
+                | None -> Seq.empty
+                | Some rs -> rs.Rows |> Seq.map (fun t -> { TitleId = xval t?titleID; TitleName = xval t?titleName })
+            QueryTime = response.QueryTime
+            CachedUntil = response.CachedUntil
+        }
+    }
+
     interface EveLib.FSharp.ICharQueries with
         member x.GetAccountBalance(charId) = getAccountBalance charId
         member x.GetMailHeaders(charId) = getMailHeaders charId
         member x.GetMailBodies(charId, msgIds) = getMailBodies charId msgIds
+        member x.GetCharacterSheet(charId) = getCharSheet charId
     interface EveLib.Async.ICharQueries with
         member x.GetAccountBalance(charId) = getAccountBalance charId |> Async.StartAsTask
         member x.GetMailHeaders(charId) = getMailHeaders charId |> Async.StartAsTask
         member x.GetMailBodies(charId, msgIds) = getMailBodies charId msgIds |> Async.StartAsTask
+        member x.GetCharacterSheet(charId) = getCharSheet charId |> Async.StartAsTask
     interface EveLib.Sync.ICharQueries with
         member x.GetAccountBalance(charId) = getAccountBalance charId |> Async.RunSynchronously
         member x.GetMailHeaders(charId) = getMailHeaders charId |> Async.RunSynchronously
         member x.GetMailBodies(charId, msgIds) = getMailBodies charId msgIds |> Async.RunSynchronously
+        member x.GetCharacterSheet(charId) = getCharSheet charId |> Async.RunSynchronously

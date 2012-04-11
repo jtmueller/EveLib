@@ -9,6 +9,7 @@ type ICharQueries =
     abstract member GetAccountBalance : charId:int -> Async<WalletSet>
     abstract member GetMailHeaders : charId:int -> Async<seq<MailHeader>>
     abstract member GetMailBodies : charId:int * [<ParamArray>] messageIds:int[] -> Async<seq<MailBody>>
+    abstract member GetCharacterSheet : charId:int -> Async<CharacterSheet>
 
 type ICorpQueries =
     abstract member GetAccountBalance : corpId:int -> Async<WalletSet>
@@ -37,6 +38,7 @@ type ICharQueries =
     abstract member GetAccountBalance : charId:int -> Task<WalletSet>
     abstract member GetMailHeaders : charId:int -> Task<seq<MailHeader>>
     abstract member GetMailBodies : charId:int * [<ParamArray>] messageIds:int[] -> Task<seq<MailBody>>
+    abstract member GetCharacterSheet : charId:int -> Task<CharacterSheet>
 
 type ICorpQueries =
     abstract member GetAccountBalance : corpId:int -> Task<WalletSet>
@@ -64,6 +66,7 @@ type ICharQueries =
     abstract member GetAccountBalance : charId:int -> WalletSet
     abstract member GetMailHeaders : charId:int -> seq<MailHeader>
     abstract member GetMailBodies : charId:int * [<ParamArray>] messageIds:int[] -> seq<MailBody>
+    abstract member GetCharacterSheet : charId:int -> CharacterSheet
 
 type ICorpQueries =
     abstract member GetAccountBalance : corpId:int -> WalletSet

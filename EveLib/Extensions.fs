@@ -20,6 +20,16 @@ module Extensions =
         elif String.IsNullOrEmpty(x.Value) then None
         else Some(xval x)
 
+    let inline xelv name (parent:XElement) =
+        let el = parent.Element(xn name)
+        if isNull el then failwithf "Element not found: %s" name
+        else xval el
+
+    let inline xelvo name (parent:XElement) =
+        let el = parent.Element(xn name)
+        if isNull el then None
+        else Some(xval el)
+
     let (|Element|_|) name (node:XElement) =
         if isNull node then
             None

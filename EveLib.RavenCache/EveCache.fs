@@ -64,7 +64,7 @@ type internal EveCache(baseClient: FSharp.IEveQueries, store: IDocumentStore) =
         let! matches =
             query {
                 for ni in session.Query<NamedItem>() do
-                where (LinqExtensions.In(ni.Name, names))
+                where (LinqExtensions.In(ni.ItemName, names))
                 select ni
             } |> AsyncQuery.asIList
 
@@ -82,13 +82,13 @@ type internal EveCache(baseClient: FSharp.IEveQueries, store: IDocumentStore) =
 
             let missing =
                 stillGood
-                |> Seq.map (fun m -> m.Name)
+                |> Seq.map (fun m -> m.ItemName)
                 |> Set.ofSeq
                 |> Set.difference (names |> Set.ofArray)
 
             let toLoad =
                 outdated
-                |> Seq.map (fun m -> m.Name)
+                |> Seq.map (fun m -> m.ItemName)
                 |> Seq.append missing
 
             if toLoad |> Seq.exists (fun _ -> true) then

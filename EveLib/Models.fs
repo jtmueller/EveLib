@@ -26,7 +26,7 @@ type Character =
         member x.PortraitUrl =
             sprintf "http://image.eveonline.com/Character/%i_128.jpg" x.Id
 
-type CharacterList = {
+and CharacterList = {
     mutable Id : int
     Characters : seq<Character>
     QueryTime : DateTimeOffset
@@ -35,7 +35,7 @@ type CharacterList = {
 
 type NamedItem = {
     mutable Id : int
-    Name : string
+    ItemName : string
     CachedUntil : DateTimeOffset
 }
 
@@ -87,7 +87,62 @@ type MailBody = {
     CachedUntil : DateTimeOffset
 }
 
-type MailBodyList = {
-    MailBodies : seq<MailBody>
-    MissingMessageIds : seq<int>
+type CharacterSheet = {
+    mutable Id : int
+    CharacterName : string
+    DoB : DateTimeOffset
+    Race : string
+    Bloodline : string
+    Ancestry : string
+    Gender : string
+    CorpName : string
+    CorpId : int
+    AllianceName : string option
+    AllianceId : int option
+    CloneName : string
+    CloneSkillPoints : int
+    Balance : decimal
+    AttributeEnhancers : AttributeEnhancers
+    Attributes : Attributes
+    Skills : seq<Skill>
+    Certificates : seq<int>
+    CorpRoles : seq<Role>
+    CorpRolesAtHQ : seq<Role>
+    CorpRolesAtBase : seq<Role>
+    CorpRolesAtOther : seq<Role>
+    CorpTitles : seq<Title>
+    QueryTime : DateTimeOffset
+    CachedUntil : DateTimeOffset
+}
+and Augmentor = {
+    AugmentName : string
+    AugmentValue : int
+}
+and AttributeEnhancers = {
+    MemoryBonus : Augmentor option
+    PerceptionBonus : Augmentor option
+    WillpowerBonus : Augmentor option
+    IntelligenceBonus : Augmentor option
+    CharismaBonus : Augmentor option
+}
+and Attributes = {
+    Intelligence : int
+    Memory : int
+    Charisma : int
+    Perception : int
+    Willpower : int
+}
+and Skill = {
+    TypeId : int
+    SkillPoints : int
+    Level : int
+    Published : bool
+}
+and Role = {
+    RoleId : int64
+    RoleName : string
+}
+and Title = {
+    TitleId : int
+    TitleName : string
 }

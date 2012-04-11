@@ -14,6 +14,7 @@ type internal CharacterCache(baseClient: FSharp.ICharQueries, store: IDocumentSt
             query {
                 for set in session.Query<WalletSet>() do
                 where (set.Type = WalletType.Personal && set.Id = charId)
+                take 1
             } |> AsyncQuery.head
 
         match wallets with
@@ -103,18 +104,50 @@ type internal CharacterCache(baseClient: FSharp.ICharQueries, store: IDocumentSt
             return upcast bodies
     }
 
+    let getCharSheet charId = async {
+        use session = store.OpenAsyncSession()
+
+        let! charSheet =
+            query {
+                for cs in session.Query<CharacterSheet>() do
+                where (cs.Id = charId)
+                take 1
+            } |> AsyncQuery.head
+
+        match charSheet with
+        | None ->
+            let! updated = baseClient.GetCharacterSheet(charId)
+            session.Store updated
+            do! session.AsyncSaveChanges()
+            return updated
+        | Some cs when cs.CachedUntil < DateTimeOffset.UtcNow ->
+            try
+                let! updated = baseClient.GetCharacterSheet(charId)
+                session.Advanced.Evict cs
+                session.Store updated
+                do! session.AsyncSaveChanges()
+                return updated
+            with _ ->
+                return cs
+        | Some cs ->
+            return cs
+    }
+
     interface EveLib.FSharp.ICharQueries with
         member x.GetAccountBalance(charId) = getAccountBalance charId
         member x.GetMailHeaders(charId) = getMailHeaders charId
         member x.GetMailBodies(charId, [<ParamArray>] messageIds) = 
             getMailBodies charId messageIds
+        member x.GetCharacterSheet(charId) = getCharSheet charId
     interface EveLib.Async.ICharQueries with
         member x.GetAccountBalance(charId) = getAccountBalance charId |> Async.StartAsTask
         member x.GetMailHeaders(charId) = getMailHeaders charId |> Async.StartAsTask
         member x.GetMailBodies(charId, [<ParamArray>] messageIds) = 
             getMailBodies charId messageIds |> Async.StartAsTask
+        member x.GetCharacterSheet(charId) = getCharSheet charId |> Async.StartAsTask
     interface EveLib.Sync.ICharQueries with
         member x.GetAccountBalance(charId) = getAccountBalance charId |> Async.RunSynchronously
         member x.GetMailHeaders(charId) = getMailHeaders charId |> Async.RunSynchronously
         member x.GetMailBodies(charId, [<ParamArray>] messageIds) = 
             getMailBodies charId messageIds |> Async.RunSynchronously
+        member x.GetCharacterSheet(charId) = getCharSheet charId |> Async.RunSynchronously
