@@ -38,7 +38,7 @@ type internal CorporationCache(baseClient: FSharp.ICorpQueries, store: IDocument
 
     interface EveLib.FSharp.ICorpQueries with
         member x.GetAccountBalance(charId) = getAccountBalance charId
+
     interface EveLib.Async.ICorpQueries with
         member x.GetAccountBalance(charId) = getAccountBalance charId |> Async.StartAsTask
-    interface EveLib.Sync.ICorpQueries with
-        member x.GetAccountBalance(charId) = getAccountBalance charId |> Async.RunSynchronously
+

@@ -56,15 +56,7 @@ type EveClient (apiKey:ApiKey) =
         member x.Eve = upcast eve.Value
         member x.Map = upcast map.Value
 
-    interface EveLib.Sync.IEveClient with
-        member x.GetCharacters() = getCharacters() |> Async.RunSynchronously
-        member x.GetServerStatus() = getServerStatus() |> Async.RunSynchronously
-        member x.Character = upcast character.Value
-        member x.Corporation = upcast corporation.Value
-        member x.Eve = upcast eve.Value
-        member x.Map = upcast map.Value
-
     static member CreateFSharp apiKey = EveClient(apiKey) :> EveLib.FSharp.IEveClient
     static member CreateAsync apiKey = EveClient(apiKey) :> EveLib.Async.IEveClient
-    static member CreateSync apiKey = EveClient(apiKey) :> EveLib.Sync.IEveClient
+
 

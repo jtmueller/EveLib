@@ -153,13 +153,10 @@ type internal CharacterQueries(apiValues: (string * string) list) =
         member x.GetMailHeaders(charId) = getMailHeaders charId
         member x.GetMailBodies(charId, msgIds) = getMailBodies charId msgIds
         member x.GetCharacterSheet(charId) = getCharSheet charId
+
     interface EveLib.Async.ICharQueries with
         member x.GetAccountBalance(charId) = getAccountBalance charId |> Async.StartAsTask
         member x.GetMailHeaders(charId) = getMailHeaders charId |> Async.StartAsTask
         member x.GetMailBodies(charId, msgIds) = getMailBodies charId msgIds |> Async.StartAsTask
         member x.GetCharacterSheet(charId) = getCharSheet charId |> Async.StartAsTask
-    interface EveLib.Sync.ICharQueries with
-        member x.GetAccountBalance(charId) = getAccountBalance charId |> Async.RunSynchronously
-        member x.GetMailHeaders(charId) = getMailHeaders charId |> Async.RunSynchronously
-        member x.GetMailBodies(charId, msgIds) = getMailBodies charId msgIds |> Async.RunSynchronously
-        member x.GetCharacterSheet(charId) = getCharSheet charId |> Async.RunSynchronously
+

@@ -24,7 +24,7 @@ type internal MapQueries(apiValues: (string * string) list) =
 
     interface EveLib.FSharp.IMapQueries with
         member x.GetRecentKills() = getRecentKills()
+
     interface EveLib.Async.IMapQueries with
         member x.GetRecentKills() = getRecentKills() |> Async.StartAsTask
-    interface EveLib.Sync.IMapQueries with
-        member x.GetRecentKills() = getRecentKills() |> Async.RunSynchronously
+

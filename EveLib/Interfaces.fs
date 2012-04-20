@@ -58,31 +58,4 @@ type IEveClient =
     abstract member Eve : IEveQueries with get
     abstract member Map : IMapQueries with get
 
-namespace EveLib.Sync
-open System
-open EveLib
-
-type ICharQueries =
-    abstract member GetAccountBalance : charId:int -> WalletSet
-    abstract member GetMailHeaders : charId:int -> seq<MailHeader>
-    abstract member GetMailBodies : charId:int * [<ParamArray>] messageIds:int[] -> seq<MailBody>
-    abstract member GetCharacterSheet : charId:int -> CharacterSheet
-
-type ICorpQueries =
-    abstract member GetAccountBalance : corpId:int -> WalletSet
-
-type IEveQueries =
-    abstract member GetItemIds : [<ParamArray>] names:string[] -> seq<NamedItem>
-    abstract member GetItemNames : [<ParamArray>] ids:int[] -> seq<NamedItem>
-
-type IMapQueries =
-    abstract member GetRecentKills : unit -> seq<SolarSystemKills>
-
-type IEveClient =
-    abstract member GetCharacters : unit -> CharacterList
-    abstract member GetServerStatus : unit -> ServerStatus
-    abstract member Character : ICharQueries with get
-    abstract member Corporation : ICorpQueries with get
-    abstract member Eve : IEveQueries with get
-    abstract member Map : IMapQueries with get
 

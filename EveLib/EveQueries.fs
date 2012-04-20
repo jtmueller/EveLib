@@ -30,9 +30,8 @@ type internal EveQueries(apiValues: (string * string) list) =
     interface EveLib.FSharp.IEveQueries with
         member x.GetItemIds([<ParamArray>] names : string[]) = getItemIds names
         member x.GetItemNames([<ParamArray>] ids : int[]) = getItemNames ids
+
     interface EveLib.Async.IEveQueries with
         member x.GetItemIds([<ParamArray>] names : string[]) = getItemIds names |> Async.StartAsTask
         member x.GetItemNames([<ParamArray>] ids : int[]) = getItemNames ids |> Async.StartAsTask
-    interface EveLib.Sync.IEveQueries with
-        member x.GetItemIds([<ParamArray>] names : string[]) = getItemIds names |> Async.RunSynchronously
-        member x.GetItemNames([<ParamArray>] ids : int[]) = getItemNames ids |> Async.RunSynchronously
+
